@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type DashboardOverview = {
   revenue: {
@@ -30,7 +30,7 @@ import {
 } from "recharts";
 import { useAuth } from "../context/AuthContext";
 
-const statusIcon: Record<string, JSX.Element> = {
+const statusIcon: Record<string, React.ReactElement> = {
   succeeded: <CheckCircle size={14} className="text-emerald-400" />,
   failed: <XCircle size={14} className="text-red-400" />,
   pending: <Clock size={14} className="text-amber-400" />,
