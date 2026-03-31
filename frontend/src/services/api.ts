@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://ai-finance-ops.onrender.com/api/v1",
+  baseURL: "https://ai-finance-ops.onrender.com/api/v1",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -16,7 +16,7 @@ api.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      window.location.href = "/ai-finance-ops/#/login";
     }
     return Promise.reject(err);
   }

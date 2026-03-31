@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTenant(null);
     setToken(null);
     localStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/ai-finance-ops/#/login";
   };
 
   return (

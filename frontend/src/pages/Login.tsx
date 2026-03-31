@@ -27,7 +27,7 @@ export default function Login() {
       const mockTenant = { id: payload.tenant_id, name: "Acme Corp", slug: "acme", email: "acme@example.com", is_active: true, created_at: new Date().toISOString() };
 
       setAuth(mockUser, mockTenant, token);
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.detail || "Invalid credentials");
     } finally {

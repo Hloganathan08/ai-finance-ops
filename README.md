@@ -3,8 +3,8 @@
 A production-grade, multi-tenant SaaS billing and finance operations platform with AI-powered insights.
 
 ## Live Demo
-- Frontend: coming soon
-- Backend API: coming soon
+- Frontend: https://hloganathan08.github.io/ai-finance-ops/
+- Backend API: https://ai-finance-ops.onrender.com
 
 ## Tech Stack
 
