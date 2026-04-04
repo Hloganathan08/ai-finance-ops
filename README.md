@@ -32,23 +32,15 @@ A full-stack developer tool that uses AI to analyze GitHub repositories, summari
 - **Real-time status** — Dashboard polls and updates repo status from `pending → analyzing → ready`
 
 ## Architecture
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
-│   React + TS    │────▶│   FastAPI REST   │────▶│  PostgreSQL │
-│   Dashboard     │     │   API (v1)       │     │  Database   │
-└─────────────────┘     └──────────────────┘     └─────────────┘
-│
-┌───────────┴───────────┐
-▼                       ▼
-┌──────────┐           ┌─────────────┐
-│ Claude AI │           │ Redis+Celery │
-│  (Haiku)  │           │   Workers   │
-└──────────┘           └─────────────┘
-│
-▼
-┌─────────────────┐
-│   GitHub API    │
-│ (file fetching) │
-└─────────────────┘
+```mermaid
+graph TD
+    A[React + TypeScript Frontend] -->|HTTP| B[FastAPI REST API]
+    B --> C[PostgreSQL Database]
+    B --> D[Claude AI - Haiku]
+    B --> E[Celery + Redis Workers]
+    E --> F[GitHub API]
+    E --> D
+```
 
 ## Getting Started
 
