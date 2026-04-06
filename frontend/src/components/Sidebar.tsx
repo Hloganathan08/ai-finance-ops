@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard, CreditCard, Receipt, Sparkles,
-  LogOut, Zap, ChevronRight, User
+  LogOut, Zap, ChevronRight, User, AlertTriangle
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import clsx from "clsx";
@@ -11,6 +11,7 @@ const navItems = [
   { to: "/plans", icon: Zap, label: "Plans" },
   { to: "/subscriptions", icon: CreditCard, label: "Subscriptions" },
   { to: "/transactions", icon: Receipt, label: "Transactions" },
+  { to: "/anomalies", icon: AlertTriangle, label: "Anomalies" },
   { to: "/ai", icon: Sparkles, label: "AI Insights" },
 ];
 

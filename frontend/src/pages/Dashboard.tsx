@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 type DashboardOverview = {
   revenue: {
@@ -17,12 +17,13 @@ type DashboardOverview = {
   tenant: { id: string; user: string; };
 };
 import { getDashboardOverview } from "../services/api";
+import { useWebSocket, WebSocketMessage } from "../hooks/useWebSocket";
 
 import StatCard from "../components/StatCard";
 import { SkeletonCard, SkeletonRow } from "../components/LoadingSkeleton";
 import {
   DollarSign, TrendingUp, CreditCard, AlertCircle,
-  CheckCircle, XCircle, Clock, ArrowUpRight
+  CheckCircle, XCircle, Clock, ArrowUpRight, Wifi, WifiOff
 } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip,
@@ -47,6 +48,7 @@ const statusBadge: Record<string, string> = {
 export default function Dashboard() {
   const [data, setData] = useState<DashboardOverview | null>(null);
   const [loading, setLoading] = useState(true);
+  const [liveTransactions, setLiveTransactions] = useState<any[]>([]);
   const { user, tenant } = useAuth();
 
   useEffect(() => {
@@ -54,6 +56,29 @@ export default function Dashboard() {
       .then(r => setData(r.data))
       .finally(() => setLoading(false));
   }, []);
+
+  // Handle real-time WebSocket messages
+  const handleMessage = useCallback((msg: WebSocketMessage) => {
+    if (msg.type === "new_transaction") {
+      setLiveTransactions(prev => [msg.data, ...prev].slice(0, 5));
+      // Also update the main data if needed
+      setData(prevData => {
+        if (!prevData) return prevData;
+        return {
+          ...prevData,
+          recent_transactions: [msg.data, ...prevData.recent_transactions].slice(0, 10),
+        };
+      });
+    }
+    if (msg.type === "stats_update") {
+      setData(prevData => {
+        if (!prevData) return prevData;
+        return { ...prevData, revenue: { ...prevData.revenue, ...msg.data } };
+      });
+    }
+  }, []);
+
+  const { connected } = useWebSocket({ onMessage: handleMessage });
 
   // Build chart data from transactions
   const chartData = data?.recent_transactions
@@ -75,11 +100,38 @@ export default function Dashboard() {
             Welcome back, <span className="text-white">{user?.full_name || user?.email}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-dark-700 border border-dark-500">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-sm text-dark-300">{tenant?.name}</span>
+        <div className="flex items-center gap-4">
+          {/* Live indicator */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${connected ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"}`}>
+            {connected ? <Wifi size={14} /> : <WifiOff size={14} />}
+            <span className="text-xs font-medium">{connected ? "Live" : "Offline"}</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-dark-700 border border-dark-500">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-sm text-dark-300">{tenant?.name}</span>
+          </div>
         </div>
       </div>
+
+      {/* Live transactions banner (if any) */}
+      {liveTransactions.length > 0 && (
+        <div className="p-4 rounded-xl bg-brand-500/10 border border-brand-500/20">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
+            <span className="text-sm font-medium text-brand-400">Live Activity</span>
+          </div>
+          <div className="flex gap-3 overflow-x-auto">
+            {liveTransactions.map((tx, i) => (
+              <div key={i} className="flex-shrink-0 px-3 py-2 rounded-lg bg-dark-800 border border-dark-600">
+                <span className="text-white font-medium">${tx.amount}</span>
+                <span className={`ml-2 text-xs ${tx.status === "succeeded" ? "text-emerald-400" : "text-red-400"}`}>
+                  {tx.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">

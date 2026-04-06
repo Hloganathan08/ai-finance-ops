@@ -8,6 +8,7 @@ import Transactions from "./pages/Transactions";
 import Plans from "./pages/Plans";
 import Subscriptions from "./pages/Subscriptions";
 import AIInsights from "./pages/AIInsights";
+import Anomalies from "./pages/Anomalies";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -25,6 +26,7 @@ function AppRoutes() {
       <Route path="/plans" element={<PrivateRoute><Layout><Plans /></Layout></PrivateRoute>} />
       <Route path="/subscriptions" element={<PrivateRoute><Layout><Subscriptions /></Layout></PrivateRoute>} />
       <Route path="/ai" element={<PrivateRoute><Layout><AIInsights /></Layout></PrivateRoute>} />
+      <Route path="/anomalies" element={<PrivateRoute><Layout><Anomalies /></Layout></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
