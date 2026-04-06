@@ -17,7 +17,7 @@ type DashboardOverview = {
   tenant: { id: string; user: string; };
 };
 import { getDashboardOverview } from "../services/api";
-import { useWebSocket, WebSocketMessage } from "../hooks/useWebSocket";
+import { useWebSocket, type WebSocketMessage } from "../hooks/useWebSocket";
 
 import StatCard from "../components/StatCard";
 import { SkeletonCard, SkeletonRow } from "../components/LoadingSkeleton";

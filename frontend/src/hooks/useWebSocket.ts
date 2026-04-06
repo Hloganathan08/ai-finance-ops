@@ -13,7 +13,7 @@ interface UseWebSocketOptions {
 export function useWebSocket({ onMessage, url }: UseWebSocketOptions) {
   const ws = useRef<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
-  const reconnectTimeout = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const connect = useCallback(() => {
     const wsUrl = url || `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.hostname}:8000/ws/dashboard`;
@@ -42,7 +42,6 @@ export function useWebSocket({ onMessage, url }: UseWebSocketOptions) {
     ws.current.onclose = () => {
       console.log("WebSocket disconnected");
       setConnected(false);
-      // Reconnect after 3 seconds
       reconnectTimeout.current = setTimeout(connect, 3000);
     };
 

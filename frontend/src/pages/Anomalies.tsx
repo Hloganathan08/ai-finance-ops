@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AlertTriangle, CheckCircle, Clock, Zap, DollarSign, RefreshCw } from "lucide-react";
-import { useWebSocket, WebSocketMessage } from "../hooks/useWebSocket";
+import { useWebSocket, type WebSocketMessage } from "../hooks/useWebSocket";
 import api from "../services/api";
 
 type Anomaly = {
